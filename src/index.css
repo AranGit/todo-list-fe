@@ -1,0 +1,17 @@
+.container {
+    display: flex;
+    flex-direction: row;
+}
+
+.container > * {
+    display: flex;
+    flex-direction: column;
+}
+
+.todo-button {
+    margin-bottom: 10px;
+}
+
+.column-space {
+    padding: 10px 15px;
+}
