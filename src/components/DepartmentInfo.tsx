@@ -22,15 +22,13 @@ function DepartmentInfo() {
     fetchData({ setDepartments });
   }, [])
 
-
-  console.log("departments:" + Object.keys(departments));
   return (
     <div>
       {
         <ul>
           {
-            departments.map((department: Department.DepartmentData) =>
-              <li>
+            departments.map((department: Department.DepartmentData, index) =>
+              <li key={`${Object.keys(department)}-${index}`}>
                 <div>
                   <b>{Object.keys(department)}</b>
                 </div>
@@ -65,7 +63,7 @@ function DepartmentInfo() {
                   <ul>
                     {
                       department[Object.keys(department)[0]].addressUser.map((address: Department.AddressUser) =>
-                        <li>
+                        <li key={`${Object.keys(address)}-${index}`}>
                           {Object.keys(address)}: {address[Object.keys(address)[0]]}
                         </li>
                       )
