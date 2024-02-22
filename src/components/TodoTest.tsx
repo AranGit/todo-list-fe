@@ -1,12 +1,31 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { todoList, TodoData, getAllTypes } from '../utils/utils'
 import Todo from './Todo'
 
+type timeoutData = {
+  name: string,
+  timeoutID: number
+}
 
 function TodoTest() {
   const [allTodoList, setTodoList] = useState<TodoData[]>(todoList);
   const [selectedTodoList, setSelectedTodoList] = useState<TodoData[]>([]);
+  const prevSelectedTodoList = useRef(null);
+  const [timeoutData, setTimeoutData] = useState<timeoutData[]>([]);
+
+  useEffect(() => {
+    const prevData = prevSelectedTodoList.current;
+    if (prevData?.length > selectedTodoList.length) {
+      const dataRemoved = prevData?.find((data: TodoData) => !selectedTodoList.includes(data))
+      const targetTimeout = timeoutData.find((data: timeoutData) => data.name === dataRemoved?.name)
+      if (targetTimeout) {
+        setTimeoutData(timeoutData.filter(data => data.name !== targetTimeout.name))
+        clearTimeout(targetTimeout.timeoutID);
+      }
+    }
+    prevSelectedTodoList.current = selectedTodoList;
+  }, [selectedTodoList])
 
   const removeItem = (item: TodoData) => {
     setSelectedTodoList((prevDatas) => prevDatas.filter((data: TodoData) => data !== item));
@@ -18,9 +37,10 @@ function TodoTest() {
   const addItem = (item: TodoData) => {
     setSelectedTodoList((prevDatas) => [...prevDatas, item]);
     setTodoList((prevDatas) => prevDatas.filter((data: TodoData) => data !== item));
-    setTimeout(() => {
+    const timeoutID = setTimeout(() => {
       removeItem(item);
     }, 5000);
+    setTimeoutData([...timeoutData, { name: item.name, timeoutID: timeoutID }])
   };
 
   return (
